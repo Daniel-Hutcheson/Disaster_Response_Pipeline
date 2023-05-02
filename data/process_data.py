@@ -67,6 +67,7 @@ def clean_data(df):
 
     return df
 
+
 def save_data(df, database_filename):
     '''
     Saves given dataframe to a SQL database.
@@ -78,7 +79,8 @@ def save_data(df, database_filename):
 
     #create SQL engine and save database
     engine = create_engine('sqlite:///{}'.format(database_filename))
-    df.to_sql('{}_cleaned'.format(database_filename), engine, index=False)
+    df.to_sql('data_cleaned', engine, index=False)
+
 
 def main():
     if len(sys.argv) == 4:
