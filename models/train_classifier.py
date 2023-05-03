@@ -1,24 +1,108 @@
+# import libraries
 import sys
+
+import pandas as pd
+from sqlalchemy import create_engine
+
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.multioutput import MultiOutputClassifier
+from sklearn.metrics import classification_report
+from sklearn.model_selection import GridSearchCV
+
+import pickle
 
 
 def load_data(database_filepath):
-    pass
+    '''
+    Loads the data from a given SQL database.
 
+    Args:
+    database_filepath = filepath to the database to load
+
+    returns:
+    X: Input variables
+    Y: Output variables
+    '''
+
+    engine = create_engine('sqlite:///../data/DisasterResponse.db')
+
+    df = pd.read_sql('data_cleaned', con=engine)
+    X = df.message.copy()
+    Y = df.drop(columns=['message','id','original','genre']).copy()
+
+    category_names = Y.columns.values
+
+    return X, Y, category_names
 
 def tokenize(text):
-    pass
+    '''
+    Tokenizes the given input text.
+
+    Args:
+    text: Text to tokenize
+
+    returns:
+    cleaned tokens
+    '''
+    
+    tokens = word_tokenize(text)
+    lemmatizer = WordNetLemmatizer()
+
+    clean_tokens = []
+    for tok in tokens:
+        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
+        clean_tokens.append(clean_tok)
+
+    return clean_tokens
 
 
 def build_model():
-    pass
+    '''
+    Builds a model.
+
+    returns:
+    model
+    '''
+
+    pipeline = Pipeline([
+        ('vect', CountVectorizer(tokenizer=tokenize)),
+        ('tfidf', TfidfTransformer()),
+        # ('clf', RandomForestClassifier()),
+        ('multi_output', MultiOutputClassifier(RandomForestClassifier()))
+    ])
+
+    # parameters = ['vect__ngram_range', 'vect__preprocessor', 'vect__stop_words']
+
+    # parameters = {
+    #     'features__text_pipeline__vect__ngram_range': ((1, 1), (1, 2)),
+    #     'clf__n_estimators': [50, 100, 200],
+    #     'clf__min_samples_split': [2, 3, 4]
+    # }
+
+    # model = GridSearchCV(pipeline, param_grid=parameters)
+
+    return pipeline
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
     pass
+    # for column in category_names:
+    #     classification_report(Y_test[f'{column}'], Y_pred[f'{column}'])
 
 
 def save_model(model, model_filepath):
-    pass
+    '''
+    Saves a given model to a pickle file using a given filepath.
+    '''
+
+    with open(model_filepath, 'wb') as file:
+        pickle.dump(model, file)
 
 
 def main():
