@@ -8,7 +8,6 @@ from nltk.tokenize import word_tokenize
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
-# from sklearn.externals import joblib
 from sqlalchemy import create_engine
 
 import joblib
@@ -46,6 +45,8 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+    category_counts = df.drop(columns=['id', 'message', 'original', 'genre']).sum().sort_values()
+    category_counts.index = category_counts.index.str.replace('_',' ')
 
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
@@ -65,6 +66,30 @@ def index():
                 },
                 'xaxis': {
                     'title': "Genre"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    y=category_counts.index,
+                    x=category_counts.values,
+                    orientation='h',
+                )
+            ],
+            'layout':{
+                'title': 'Count of all categories on a log scale',
+                'height': 1000,
+                'yaxis': {
+                    'title': '',
+                    'ticks': 'outside',
+                    'title_standoff': 50,
+                    'tick_angle': 45
+                },
+                'xaxis': {
+                    'title': 'Count on a log-scale',
+                    'type': 'log',
+                    'tick0': 0
                 }
             }
         }

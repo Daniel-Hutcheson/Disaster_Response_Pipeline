@@ -91,7 +91,15 @@ def build_model():
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
+    '''
+    This function evaluates the model and prints out all relevant stats relating to the models performance.
 
+    Args:
+    model: the build model
+    X_test: test set
+    Y_test: test set
+    category_names: the names of the columns to be predicted by the model
+    '''
     Y_pred = model.predict(X_test)
 
     i = 0
