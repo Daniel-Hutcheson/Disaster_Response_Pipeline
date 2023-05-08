@@ -56,6 +56,12 @@ def clean_data(df):
         # convert column from string to numeric
         categories[column] = pd.to_numeric(categories[column])
 
+    # checks for invalid values != 0 or 1 and drops 
+    #TODO:
+    print(categories.shape[0])
+    categories = categories.drop(categories[(categories != 0) | (categories != 1)].index)
+    print(categories.shape[0])
+
     # drop the original categories column from `df`
     df.drop(columns=['categories'], inplace=True)
 
@@ -79,7 +85,7 @@ def save_data(df, database_filename):
 
     #create SQL engine and save database
     engine = create_engine('sqlite:///{}'.format(database_filename))
-    df.to_sql('data_cleaned', engine, index=False)
+    df.to_sql('data_cleaned', engine, index=False, if_exists='replace')
 
 
 def main():
