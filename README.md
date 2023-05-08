@@ -9,17 +9,35 @@ This functionality is given through a web app, which also shows some plots regar
 
 ### File Description:
 This repository has three main folders that each contain a script to handle a specific part of the overall workflow:
-- data:
+- data/:
 
     This folder contains two CSV files, one with all messages we want to process and one that with all categories we want to use. Furthermore there is a python script (`process_data.py`) that processes the csv files into a cleaned SQL database, which is also saved in the same folder.
 
-- models:
+- models/:
 
     This folder contains a python script (`train_classifier.py`) that reads in the database, sets up a data pipeline to further optimize the data for training the ML model, actually builds and trains the model and saves it into a pickle file in the same directory.
 
-- app:
+- app/:
 
     This folder directory contains also a python script (`run.py`) which sets up a local web app that uses the build ML model to categorize given Messages and also displays some plots regarding the currently used database.
+
+
+Overall project structure:
+
+app
+| - template
+| |- master.html # main page of web app
+| |- go.html # classification result page of web app
+|- run.py # Flask file that runs app
+data
+|- disaster_categories.csv # data to process
+|- disaster_messages.csv # data to process
+|- process_data.py
+|- InsertDatabaseName.db # database to save clean data to
+models
+|- train_classifier.py
+|- classifier.pkl # saved model
+README.md
 
 
 ### Instructions:
