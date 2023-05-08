@@ -20,8 +20,9 @@ This repository has three main folders that each contain a script to handle a sp
 - app/:
 
     This folder directory contains also a python script (`run.py`) which sets up a local web app that uses the build ML model to categorize given Messages and also displays some plots regarding the currently used database.
-
-
+  
+    
+    
 Overall project structure:
 
 app  
