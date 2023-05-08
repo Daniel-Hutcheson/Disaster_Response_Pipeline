@@ -10,8 +10,11 @@ This functionality is given through a web app, which also shows some plots regar
 ### File Description:
 This repository has three main folders that each contain a script to handle a specific part of the overall workflow:
 - data:
+
     This folder contains two CSV files, one with all messages we want to process and one that with all categories we want to use. Furthermore there is a python script `process_data.py` that processes the csv files into a cleaned SQL database, which is also saved in the same folder.
+
 - models:
+
     This folder contains a python script that reads in the database, sets up a data pipeline to further optimize the data for training the ML model, actually builds and trains the model and saves it into a pickle file in the same directory.
 
 
