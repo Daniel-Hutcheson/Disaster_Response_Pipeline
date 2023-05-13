@@ -56,17 +56,21 @@ def clean_data(df):
         # convert column from string to numeric
         categories[column] = pd.to_numeric(categories[column])
 
-    # checks for invalid values != 0 or 1 and drops 
-    #TODO:
-    print(categories.shape[0])
-    categories = categories.drop(categories[(categories != 0) | (categories != 1)].index)
-    print(categories.shape[0])
-
     # drop the original categories column from `df`
     df.drop(columns=['categories'], inplace=True)
 
     # concatenate the original dataframe with the new `categories` dataframe
     df = pd.concat([df, categories], axis=1)
+
+    # checks for invalid values != 0 or 1 and drops these rows
+    df = df[df[category_colnames].isin([0, 1]).all(axis=1)]
+
+    # check for unique values in relevant columns
+    for col in category_colnames:
+        print('Column: {} -> {}'.format(col, df[col].unique()))
+
+    # check for missing values
+    print(df.isna().sum())
 
     # drop duplicates
     df.drop_duplicates(inplace=True)

@@ -9,7 +9,7 @@ from nltk.stem import WordNetLemmatizer
 
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.metrics import classification_report
@@ -30,7 +30,7 @@ def load_data(database_filepath):
     Y: Output variables
     '''
 
-    engine = create_engine('sqlite:///../data/DisasterResponse.db')
+    engine = create_engine('sqlite:///{}'.format(database_filepath))
 
     df = pd.read_sql('data_cleaned', con=engine)
     X = df.message.copy()
@@ -74,7 +74,7 @@ def build_model():
         ('vect', CountVectorizer(tokenizer=tokenize)),
         ('tfidf', TfidfTransformer()),
         # ('clf', RandomForestClassifier()),
-        ('multi_output', MultiOutputClassifier(RandomForestClassifier()))
+        ('multi_output', MultiOutputClassifier(AdaBoostClassifier()))
     ])
 
     params = pipeline.get_params()
@@ -104,7 +104,7 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
     i = 0
     for category in category_names:
-        print(classification_report(Y_test[category], Y_pred[:,i]))
+        print(classification_report(Y_test[category], Y_pred[:,i], zero_division=True))
         i += 1
 
 
